@@ -1,0 +1,9 @@
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\bin\Debug\GpxRouter.exe.config
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\bin\Debug\GpxRouter.exe
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\bin\Debug\GpxRouter.pdb
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\obj\Debug\GpxRouter.csprojResolveAssemblyReference.cache
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\obj\Debug\GpxRouter.Properties.Resources.resources
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\obj\Debug\GpxRouter.csproj.GenerateResource.Cache
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\obj\Debug\GpxRouter.exe
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\obj\Debug\GpxRouter.pdb
+\\des.grplnk.net\home\george.kristiansen\my_documents\visual studio 2015\Projects\GpxRouter\GpxRouter\obj\Debug\GpxRouter.Forms.MainForm.resources
