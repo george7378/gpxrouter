@@ -8,6 +8,7 @@ using GpxRouter.Utility;
 using GpxRouter.Properties;
 using System.IO;
 using System.Text;
+using Microsoft.Office.Interop.Excel;
 
 namespace GpxRouter.Forms
 {
@@ -15,7 +16,7 @@ namespace GpxRouter.Forms
     {
         #region Private classes
 
-        private class Utf8StringWriter : StringWriter
+        private class UTF8StringWriter : StringWriter
         {
             #region Properties
 
@@ -28,7 +29,7 @@ namespace GpxRouter.Forms
 
             #region Constructors
 
-            public Utf8StringWriter(StringBuilder sb) : base(sb)
+            public UTF8StringWriter(StringBuilder stringBuilder) : base(stringBuilder)
             {
 
             }
@@ -44,7 +45,8 @@ namespace GpxRouter.Forms
         private const string LatitudeColumnName = "LatitudeColumn";
         private const string LongitudeColumnName = "LongitudeColumn";
 
-        private const string FilesFilter = @"GPX files (*.gpx)|*.gpx|CSV files (*.csv)|*.csv";
+        private const string OpenFilesFilter = @"GPX files (*.gpx)|*.gpx|CSV files (*.csv)|*.csv";
+        private const string SaveFilesFilter = @"GPX files (*.gpx)|*.gpx|CSV files (*.csv)|*.csv|Excel flight log files (*.xlsm)|*.xlsm";
 
         #endregion
 
@@ -119,12 +121,11 @@ namespace GpxRouter.Forms
 
         private void AddWaypointToGridView(Waypoint waypoint)
         {
-            int rowId = dataGridViewWaypoints.Rows.Add();
-            DataGridViewRow row = dataGridViewWaypoints.Rows[rowId];
+            DataGridViewRow row = dataGridViewWaypoints.Rows[dataGridViewWaypoints.Rows.Add()];
 
             row.Cells[NameColumnName].Value = waypoint.Name;
-            row.Cells[LatitudeColumnName].Value = waypoint.Latitude;
-            row.Cells[LongitudeColumnName].Value = waypoint.Longitude;
+            row.Cells[LatitudeColumnName].Value = waypoint.LatitudeDegrees;
+            row.Cells[LongitudeColumnName].Value = waypoint.LongitudeDegrees;
         }
 
         private void ValidateRow(DataGridViewRow row)
@@ -137,14 +138,14 @@ namespace GpxRouter.Forms
                 // Validate latitude column
                 if (cell.OwningColumn.Name == LatitudeColumnName)
                 {
-                    float latitudeValue;
-                    cellValueValid = cell.Value != null && float.TryParse(cell.Value.ToString(), out latitudeValue) && latitudeValue >= -90 && latitudeValue <= 90;
+                    double latitudeValue;
+                    cellValueValid = cell.Value != null && double.TryParse(cell.Value.ToString(), out latitudeValue) && latitudeValue >= -90 && latitudeValue <= 90;
                 }
                 // Validate longitude column
                 else if (cell.OwningColumn.Name == LongitudeColumnName)
                 {
-                    float longitudeValue;
-                    cellValueValid = cell.Value != null && float.TryParse(cell.Value.ToString(), out longitudeValue) && longitudeValue >= -180 && longitudeValue <= 180;
+                    double longitudeValue;
+                    cellValueValid = cell.Value != null && double.TryParse(cell.Value.ToString(), out longitudeValue) && longitudeValue >= -180 && longitudeValue <= 180;
                 }
 
                 cell.Tag = cellValueValid;
@@ -162,17 +163,17 @@ namespace GpxRouter.Forms
             }
 
             // Extract latitude
-            float latitude = 0;
+            double latitude = 0;
             if (row.Cells[LatitudeColumnName].Value != null)
             {
-                float.TryParse(row.Cells[LatitudeColumnName].Value.ToString(), out latitude);
+                double.TryParse(row.Cells[LatitudeColumnName].Value.ToString(), out latitude);
             }
 
             // Extract longitude
-            float longitude = 0;
+            double longitude = 0;
             if (row.Cells[LongitudeColumnName].Value != null)
             {
-                float.TryParse(row.Cells[LongitudeColumnName].Value.ToString(), out longitude);
+                double.TryParse(row.Cells[LongitudeColumnName].Value.ToString(), out longitude);
             }
 
             return new Waypoint(name, latitude, longitude);
@@ -214,7 +215,7 @@ namespace GpxRouter.Forms
                     throw new ArgumentException();
                 }
 
-                results.Add(new Waypoint(nameElement.Value, float.Parse(latAttribute.Value), float.Parse(lonAttribute.Value)));
+                results.Add(new Waypoint(nameElement.Value, double.Parse(latAttribute.Value), double.Parse(lonAttribute.Value)));
             }
 
             return results;
@@ -238,7 +239,7 @@ namespace GpxRouter.Forms
                     throw new ArgumentException();
                 }
 
-                results.Add(new Waypoint(csvLineColumnValues[0], float.Parse(csvLineColumnValues[1]), float.Parse(csvLineColumnValues[2])));
+                results.Add(new Waypoint(csvLineColumnValues[0], double.Parse(csvLineColumnValues[1]), double.Parse(csvLineColumnValues[2])));
             }
 
             return results;
@@ -275,8 +276,8 @@ namespace GpxRouter.Forms
                     Waypoint rowWaypoint = ExtractWaypointFromRow(row);
 
                     XElement waypointElement = new XElement(xmlns + "rtept");
-                    waypointElement.Add(new XAttribute("lat", rowWaypoint.Latitude));
-                    waypointElement.Add(new XAttribute("lon", rowWaypoint.Longitude));
+                    waypointElement.Add(new XAttribute("lat", rowWaypoint.LatitudeDegrees));
+                    waypointElement.Add(new XAttribute("lon", rowWaypoint.LongitudeDegrees));
                     waypointElement.Add(new XElement(xmlns + "name", rowWaypoint.Name));
                     routeElement.Add(waypointElement);
                 }
@@ -285,7 +286,7 @@ namespace GpxRouter.Forms
 
             // Convert result to string
             StringBuilder builder = new StringBuilder();
-            using (TextWriter writer = new Utf8StringWriter(builder))
+            using (TextWriter writer = new UTF8StringWriter(builder))
             {
                 gpxDocument.Save(writer);
             }
@@ -305,8 +306,8 @@ namespace GpxRouter.Forms
                     Waypoint rowWaypoint = ExtractWaypointFromRow(row);
 
                     builder.Append(rowWaypoint.Name).Append(",");
-                    builder.Append(rowWaypoint.Latitude).Append(",");
-                    builder.Append(rowWaypoint.Longitude).Append("\n");
+                    builder.Append(rowWaypoint.LatitudeDegrees).Append(",");
+                    builder.Append(rowWaypoint.LongitudeDegrees).Append("\n");
                 }
             }
 
@@ -326,11 +327,7 @@ namespace GpxRouter.Forms
 
         private void dataGridViewWaypoints_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            DataGridViewRow row = dataGridViewWaypoints.Rows[e.RowIndex];
-            if (!row.IsNewRow)
-            {
-                ValidateRow(row);
-            }
+            ValidateRow(dataGridViewWaypoints.Rows[e.RowIndex]);
         }
 
         private void dataGridViewWaypoints_KeyDown(object sender, KeyEventArgs e)
@@ -349,7 +346,7 @@ namespace GpxRouter.Forms
             // Present open dialog
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = FilesFilter
+                Filter = OpenFilesFilter
             };
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -388,13 +385,6 @@ namespace GpxRouter.Forms
 
         private void buttonSaveAs_Click(object sender, EventArgs e)
         {
-            // Warn regarding no waypoints
-            if (dataGridViewWaypoints.Rows.Cast<DataGridViewRow>().Count(row => !row.IsNewRow) < 2)
-            {
-                MessageBox.Show(Resources.NotEnoughWaypointsError, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             // Warn regarding invalid cell values
             if (!AllCellsValid)
             {
@@ -402,10 +392,19 @@ namespace GpxRouter.Forms
                 return;
             }
 
+            List<DataGridViewRow> waypointEntryRows = dataGridViewWaypoints.Rows.Cast<DataGridViewRow>().Where(row => !row.IsNewRow).ToList();
+
+            // Warn regarding not enough waypoints
+            if (waypointEntryRows.Count < 2)
+            {
+                MessageBox.Show(Resources.NotEnoughWaypointsError, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             // Present save dialog
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
-                Filter = FilesFilter
+                Filter = SaveFilesFilter
             };
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
             {
@@ -421,6 +420,54 @@ namespace GpxRouter.Forms
                         // Save CSV
                         case 2:
                             File.WriteAllText(saveFileDialog.FileName, ExtractCsvFromGrid());
+                            break;
+
+                        // Save excel flight log
+                        case 3:
+                            Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
+                            if (excelApp != null)
+                            {
+                                try
+                                {
+                                    File.WriteAllBytes(saveFileDialog.FileName, Properties.Resources.FlightLogTemplate);
+
+                                    Workbook flightLogWorkbook = excelApp.Workbooks.Open(saveFileDialog.FileName);
+                                    Worksheet flightLogWorksheet = flightLogWorkbook.Worksheets[1];
+                                    Range flightLogRowRange = flightLogWorksheet.Range["A5:N6"];
+
+                                    // Loop over waypoint entries and add them to the flight log
+                                    for (int i = 0; i < waypointEntryRows.Count - 1; i++)
+                                    {
+                                        int legRowStartIndex = 5 + i*2;
+
+                                        if (i != 0)
+                                        {
+                                            flightLogRowRange.Copy(flightLogWorksheet.Range[string.Format("A{0}:N{1}", legRowStartIndex, legRowStartIndex + 1)]);
+                                        }
+
+                                        Waypoint legWaypoint1 = ExtractWaypointFromRow(waypointEntryRows.ElementAt(i));
+                                        Waypoint legWaypoint2 = ExtractWaypointFromRow(waypointEntryRows.ElementAt(i + 1));
+
+                                        flightLogWorksheet.Range[string.Format("A{0}", legRowStartIndex)].Value = legWaypoint1.Name;
+                                        flightLogWorksheet.Range[string.Format("A{0}", legRowStartIndex + 1)].Value = legWaypoint2.Name;
+                                        flightLogWorksheet.Range[string.Format("E{0}", legRowStartIndex)].Value = Math.Round(legWaypoint1.BearingToDegrees(legWaypoint2));
+                                        flightLogWorksheet.Range[string.Format("J{0}", legRowStartIndex)].Value = Math.Round(legWaypoint1.DistanceToMetres(legWaypoint2)*Utility.Global.MetresToNauticalMiles);
+                                    }
+
+                                    flightLogWorksheet.Columns[1].Autofit();
+
+                                    flightLogWorkbook.Close(true);
+                                }
+                                finally
+                                {
+                                    excelApp.Quit();
+                                    System.Runtime.InteropServices.Marshal.ReleaseComObject(excelApp);
+                                }
+                            }
+                            else
+                            {
+                                MessageBox.Show(Resources.ExcelError, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                             break;
                     }
                 }
@@ -466,6 +513,35 @@ namespace GpxRouter.Forms
 
                     dataGridViewWaypoints.ClearSelection();
                     selectedCell.Selected = true;
+                }
+            }
+        }
+
+        private void buttonPaste_Click(object sender, EventArgs e)
+        {
+            if (dataGridViewWaypoints.CurrentRow != null)
+            {
+                string[] clipboardText = Clipboard.GetText().Split(',').Select(s => s.Trim()).ToArray();
+                if (clipboardText.Length == 2)
+                {
+                    dataGridViewWaypoints.CurrentRow.Cells[LatitudeColumnName].Value = clipboardText.ElementAt(0);
+                    dataGridViewWaypoints.CurrentRow.Cells[LongitudeColumnName].Value = clipboardText.ElementAt(1);
+
+                    dataGridViewWaypoints.NotifyCurrentCellDirty(true);
+                    dataGridViewWaypoints.NotifyCurrentCellDirty(false);
+                }
+                else if (clipboardText.Length == 3)
+                {
+                    dataGridViewWaypoints.CurrentRow.Cells[NameColumnName].Value = clipboardText.ElementAt(0);
+                    dataGridViewWaypoints.CurrentRow.Cells[LatitudeColumnName].Value = clipboardText.ElementAt(1);
+                    dataGridViewWaypoints.CurrentRow.Cells[LongitudeColumnName].Value = clipboardText.ElementAt(2);
+
+                    dataGridViewWaypoints.NotifyCurrentCellDirty(true);
+                    dataGridViewWaypoints.NotifyCurrentCellDirty(false);
+                }
+                else
+                {
+                    MessageBox.Show(Resources.PasteFormatError, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

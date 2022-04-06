@@ -19,7 +19,7 @@ namespace GpxRouter.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -70,6 +70,25 @@ namespace GpxRouter.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please ensure Excel is installed on your system before using this feature..
+        /// </summary>
+        internal static string ExcelError {
+            get {
+                return ResourceManager.GetString("ExcelError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] FlightLogTemplate {
+            get {
+                object obj = ResourceManager.GetObject("FlightLogTemplate", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please correct any invalid cell values..
         /// </summary>
         internal static string InvalidCellsError {
@@ -111,6 +130,18 @@ namespace GpxRouter.Properties {
         internal static string NotEnoughWaypointsError {
             get {
                 return ResourceManager.GetString("NotEnoughWaypointsError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ensure you have comma-separated text on your clipboard which matches one of the following fomats:
+        ///
+        ///Name,Latitude,Longitude
+        ///Latitude,Longitude.
+        /// </summary>
+        internal static string PasteFormatError {
+            get {
+                return ResourceManager.GetString("PasteFormatError", resourceCulture);
             }
         }
         
