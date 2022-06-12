@@ -478,6 +478,18 @@ namespace GpxRouter.Forms
             }
         }
 
+        private void buttonReverse_Click(object sender, EventArgs e)
+        {
+            List<DataGridViewRow> rows = dataGridViewWaypoints.Rows.Cast<DataGridViewRow>().Where(r => !r.IsNewRow).ToList();
+            if (rows.Any())
+            {
+                rows.Reverse();
+
+                dataGridViewWaypoints.Rows.Clear();
+                dataGridViewWaypoints.Rows.AddRange(rows.ToArray());
+            }
+        }
+
         private void buttonMoveUp_Click(object sender, EventArgs e)
         {
             if (dataGridViewWaypoints.CurrentRow != null && !dataGridViewWaypoints.CurrentRow.IsNewRow)
