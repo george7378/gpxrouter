@@ -401,9 +401,12 @@ namespace GpxRouter.Forms
                 return;
             }
 
+            string defaultFilename = string.Format("{0} - {1}", ExtractWaypointFromRow(waypointEntryRows.First()).Name, ExtractWaypointFromRow(waypointEntryRows.Last()).Name);
+
             // Present save dialog
             SaveFileDialog saveFileDialog = new SaveFileDialog
             {
+                FileName = defaultFilename,
                 Filter = SaveFilesFilter
             };
             if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -429,7 +432,7 @@ namespace GpxRouter.Forms
                             {
                                 try
                                 {
-                                    File.WriteAllBytes(saveFileDialog.FileName, Properties.Resources.FlightLogTemplate);
+                                    File.WriteAllBytes(saveFileDialog.FileName, Resources.FlightLogTemplate);
 
                                     Workbook flightLogWorkbook = excelApp.Workbooks.Open(saveFileDialog.FileName);
                                     Worksheet flightLogWorksheet = flightLogWorkbook.Worksheets[1];
