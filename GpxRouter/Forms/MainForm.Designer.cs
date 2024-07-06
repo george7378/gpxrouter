@@ -30,6 +30,7 @@
         {
             this.groupBoxWaypoints = new System.Windows.Forms.GroupBox();
             this.buttonReverse = new System.Windows.Forms.Button();
+            this.buttonCopy = new System.Windows.Forms.Button();
             this.buttonPaste = new System.Windows.Forms.Button();
             this.buttonMoveDown = new System.Windows.Forms.Button();
             this.buttonMoveUp = new System.Windows.Forms.Button();
@@ -49,6 +50,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxWaypoints.Controls.Add(this.buttonReverse);
+            this.groupBoxWaypoints.Controls.Add(this.buttonCopy);
             this.groupBoxWaypoints.Controls.Add(this.buttonPaste);
             this.groupBoxWaypoints.Controls.Add(this.buttonMoveDown);
             this.groupBoxWaypoints.Controls.Add(this.buttonMoveUp);
@@ -72,13 +74,24 @@
             this.buttonReverse.UseVisualStyleBackColor = true;
             this.buttonReverse.Click += new System.EventHandler(this.buttonReverse_Click);
             // 
+            // buttonCopy
+            // 
+            this.buttonCopy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCopy.Location = new System.Drawing.Point(180, 234);
+            this.buttonCopy.Name = "buttonCopy";
+            this.buttonCopy.Size = new System.Drawing.Size(75, 23);
+            this.buttonCopy.TabIndex = 8;
+            this.buttonCopy.Text = "Copy";
+            this.buttonCopy.UseVisualStyleBackColor = true;
+            this.buttonCopy.Click += new System.EventHandler(this.buttonCopy_Click);
+            // 
             // buttonPaste
             // 
             this.buttonPaste.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonPaste.Location = new System.Drawing.Point(180, 263);
             this.buttonPaste.Name = "buttonPaste";
             this.buttonPaste.Size = new System.Drawing.Size(75, 23);
-            this.buttonPaste.TabIndex = 8;
+            this.buttonPaste.TabIndex = 9;
             this.buttonPaste.Text = "Paste";
             this.buttonPaste.UseVisualStyleBackColor = true;
             this.buttonPaste.Click += new System.EventHandler(this.buttonPaste_Click);
@@ -111,7 +124,7 @@
             this.buttonDelete.Location = new System.Drawing.Point(261, 263);
             this.buttonDelete.Name = "buttonDelete";
             this.buttonDelete.Size = new System.Drawing.Size(75, 23);
-            this.buttonDelete.TabIndex = 9;
+            this.buttonDelete.TabIndex = 10;
             this.buttonDelete.Text = "Delete";
             this.buttonDelete.UseVisualStyleBackColor = true;
             this.buttonDelete.Click += new System.EventHandler(this.buttonDelete_Click);
@@ -201,6 +214,7 @@
         private System.Windows.Forms.Button buttonOpen;
         private System.Windows.Forms.Button buttonMoveUp;
         private System.Windows.Forms.Button buttonMoveDown;
+        private System.Windows.Forms.Button buttonCopy;
         private System.Windows.Forms.Button buttonPaste;
         private System.Windows.Forms.Button buttonReverse;
     }

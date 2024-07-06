@@ -532,6 +532,15 @@ namespace GpxRouter.Forms
             }
         }
 
+        private void buttonCopy_Click(object sender, EventArgs e)
+        {
+            if (dataGridViewWaypoints.CurrentRow != null && !dataGridViewWaypoints.CurrentRow.IsNewRow)
+            {
+                string waypointClipboardText = $"{dataGridViewWaypoints.CurrentRow.Cells[NameColumnName].Value},{dataGridViewWaypoints.CurrentRow.Cells[LatitudeColumnName].Value},{dataGridViewWaypoints.CurrentRow.Cells[LongitudeColumnName].Value}";
+                Clipboard.SetText(waypointClipboardText);
+            }
+        }
+
         private void buttonPaste_Click(object sender, EventArgs e)
         {
             if (dataGridViewWaypoints.CurrentRow != null)
