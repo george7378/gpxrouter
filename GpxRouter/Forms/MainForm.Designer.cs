@@ -195,6 +195,7 @@
             this.ClientSize = new System.Drawing.Size(362, 368);
             this.Controls.Add(this.groupBoxFiles);
             this.Controls.Add(this.groupBoxWaypoints);
+            this.MinimumSize = new System.Drawing.Size(350, 350);
             this.Name = "MainForm";
             this.Text = "GpxRouter";
             this.groupBoxWaypoints.ResumeLayout(false);
