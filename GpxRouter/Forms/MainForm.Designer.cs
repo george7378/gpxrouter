@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBoxWaypoints = new System.Windows.Forms.GroupBox();
             this.buttonReverse = new System.Windows.Forms.Button();
             this.buttonCopy = new System.Windows.Forms.Button();
@@ -39,9 +40,15 @@
             this.buttonSaveAs = new System.Windows.Forms.Button();
             this.groupBoxFiles = new System.Windows.Forms.GroupBox();
             this.buttonOpen = new System.Windows.Forms.Button();
+            this.contextMenuStripCopy = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemCopyWaypoint = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparatorCopy1 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItemCopyIcaoFplAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemCopyIcaoFplExceptEnds = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBoxWaypoints.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewWaypoints)).BeginInit();
             this.groupBoxFiles.SuspendLayout();
+            this.contextMenuStripCopy.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBoxWaypoints
@@ -188,6 +195,42 @@
             this.buttonOpen.UseVisualStyleBackColor = true;
             this.buttonOpen.Click += new System.EventHandler(this.buttonOpen_Click);
             // 
+            // contextMenuStripCopy
+            // 
+            this.contextMenuStripCopy.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemCopyWaypoint,
+            this.toolStripSeparatorCopy1,
+            this.toolStripMenuItemCopyIcaoFplAll,
+            this.toolStripMenuItemCopyIcaoFplExceptEnds});
+            this.contextMenuStripCopy.Name = "contextMenuStripCopy";
+            this.contextMenuStripCopy.Size = new System.Drawing.Size(199, 98);
+            // 
+            // toolStripMenuItemCopyWaypoint
+            // 
+            this.toolStripMenuItemCopyWaypoint.Name = "toolStripMenuItemCopyWaypoint";
+            this.toolStripMenuItemCopyWaypoint.Size = new System.Drawing.Size(198, 22);
+            this.toolStripMenuItemCopyWaypoint.Text = "Waypoint";
+            this.toolStripMenuItemCopyWaypoint.Click += new System.EventHandler(this.toolStripMenuItemCopyWaypoint_Click);
+            // 
+            // toolStripSeparatorCopy1
+            // 
+            this.toolStripSeparatorCopy1.Name = "toolStripSeparatorCopy1";
+            this.toolStripSeparatorCopy1.Size = new System.Drawing.Size(195, 6);
+            // 
+            // toolStripMenuItemCopyIcaoFplAll
+            // 
+            this.toolStripMenuItemCopyIcaoFplAll.Name = "toolStripMenuItemCopyIcaoFplAll";
+            this.toolStripMenuItemCopyIcaoFplAll.Size = new System.Drawing.Size(198, 22);
+            this.toolStripMenuItemCopyIcaoFplAll.Text = "ICAO FPL (All)";
+            this.toolStripMenuItemCopyIcaoFplAll.Click += new System.EventHandler(this.toolStripMenuItemCopyIcaoFplAll_Click);
+            // 
+            // toolStripMenuItemCopyIcaoFplExceptEnds
+            // 
+            this.toolStripMenuItemCopyIcaoFplExceptEnds.Name = "toolStripMenuItemCopyIcaoFplExceptEnds";
+            this.toolStripMenuItemCopyIcaoFplExceptEnds.Size = new System.Drawing.Size(198, 22);
+            this.toolStripMenuItemCopyIcaoFplExceptEnds.Text = "ICAO FPL (Except ends)";
+            this.toolStripMenuItemCopyIcaoFplExceptEnds.Click += new System.EventHandler(this.toolStripMenuItemCopyIcaoFplExceptEnds_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -201,6 +244,7 @@
             this.groupBoxWaypoints.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewWaypoints)).EndInit();
             this.groupBoxFiles.ResumeLayout(false);
+            this.contextMenuStripCopy.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -218,6 +262,11 @@
         private System.Windows.Forms.Button buttonCopy;
         private System.Windows.Forms.Button buttonPaste;
         private System.Windows.Forms.Button buttonReverse;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripCopy;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCopyWaypoint;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCopyIcaoFplAll;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemCopyIcaoFplExceptEnds;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparatorCopy1;
     }
 }
 

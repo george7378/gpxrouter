@@ -9,6 +9,7 @@ using GpxRouter.Properties;
 using System.IO;
 using System.Text;
 using Microsoft.Office.Interop.Excel;
+using Point = System.Drawing.Point;
 
 namespace GpxRouter.Forms
 {
@@ -47,6 +48,9 @@ namespace GpxRouter.Forms
 
         private const string OpenFilesFilter = @"GPX files (*.gpx)|*.gpx|CSV files (*.csv)|*.csv";
         private const string SaveFilesFilter = @"GPX files (*.gpx)|*.gpx|CSV files (*.csv)|*.csv|Excel flight log files (*.xlsm)|*.xlsm";
+
+        private const string IcaoFplDirect = "DCT";
+        private const char IcaoFplSpace = ' ';
 
         #endregion
 
@@ -99,21 +103,24 @@ namespace GpxRouter.Forms
             {
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 HeaderText = Resources.Name,
-                Name = NameColumnName
+                Name = NameColumnName,
+                SortMode = DataGridViewColumnSortMode.NotSortable
             });
 
             dataGridViewWaypoints.Columns.Add(new DataGridViewTextBoxColumn
             {
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 HeaderText = Resources.Latitude,
-                Name = LatitudeColumnName
+                Name = LatitudeColumnName,
+                SortMode = DataGridViewColumnSortMode.NotSortable
             });
 
             dataGridViewWaypoints.Columns.Add(new DataGridViewTextBoxColumn
             {
                 AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill,
                 HeaderText = Resources.Longitude,
-                Name = LongitudeColumnName
+                Name = LongitudeColumnName,
+                SortMode = DataGridViewColumnSortMode.NotSortable
             });
 
             #endregion
@@ -177,6 +184,23 @@ namespace GpxRouter.Forms
             }
 
             return new Waypoint(name, latitude, longitude);
+        }
+
+        private string CreateIcaoFplRouteString( IEnumerable< Waypoint > waypoints )
+        {
+            StringBuilder icaoFplRouteStringBuilder = new StringBuilder();
+
+            icaoFplRouteStringBuilder.Append( IcaoFplDirect );
+
+            foreach ( Waypoint waypoint in waypoints )
+            {
+                icaoFplRouteStringBuilder.Append( IcaoFplSpace );
+                icaoFplRouteStringBuilder.Append( waypoint.ToIcaoFplRoutePointString() );
+                icaoFplRouteStringBuilder.Append( IcaoFplSpace );
+                icaoFplRouteStringBuilder.Append( IcaoFplDirect );
+            }
+
+            return icaoFplRouteStringBuilder.ToString();
         }
 
         #region Data loading/saving
@@ -534,11 +558,66 @@ namespace GpxRouter.Forms
 
         private void buttonCopy_Click(object sender, EventArgs e)
         {
+            contextMenuStripCopy.Show( buttonCopy, new Point( 0, buttonCopy.Height ) );
+        }
+
+        private void toolStripMenuItemCopyWaypoint_Click(object sender, EventArgs e)
+        {
             if (dataGridViewWaypoints.CurrentRow != null && !dataGridViewWaypoints.CurrentRow.IsNewRow)
             {
                 string waypointClipboardText = $"{dataGridViewWaypoints.CurrentRow.Cells[NameColumnName].Value},{dataGridViewWaypoints.CurrentRow.Cells[LatitudeColumnName].Value},{dataGridViewWaypoints.CurrentRow.Cells[LongitudeColumnName].Value}";
                 Clipboard.SetText(waypointClipboardText);
             }
+        }
+
+        private void toolStripMenuItemCopyIcaoFplAll_Click(object sender, EventArgs e)
+        {
+            if ( !AllCellsValid )
+            {
+                MessageBox.Show( Resources.InvalidCellsError, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return;
+            }
+
+            var waypointsToUse = new List< Waypoint >();
+            foreach ( DataGridViewRow row in dataGridViewWaypoints.Rows )
+            {
+                if ( row != null && !row.IsNewRow )
+                {
+                    waypointsToUse.Add( ExtractWaypointFromRow( row ) );
+                }
+            }
+
+            Clipboard.SetText( CreateIcaoFplRouteString( waypointsToUse ) );
+        }
+
+        private void toolStripMenuItemCopyIcaoFplExceptEnds_Click(object sender, EventArgs e)
+        {
+            if ( !AllCellsValid )
+            {
+                MessageBox.Show( Resources.InvalidCellsError, Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error );
+                return;
+            }
+
+            var waypointsToUse = new List< Waypoint >();
+            foreach ( DataGridViewRow row in dataGridViewWaypoints.Rows )
+            {
+                if ( row != null && !row.IsNewRow )
+                {
+                    waypointsToUse.Add( ExtractWaypointFromRow( row ) );
+                }
+            }
+
+            waypointsToUse.RemoveAll(
+                w => new List< Waypoint >
+                    {
+                        waypointsToUse.FirstOrDefault(),
+                        waypointsToUse.LastOrDefault()
+                    }
+                    .Where( x => x != null )
+                    .Distinct()
+                    .Contains( w ) );
+
+            Clipboard.SetText( CreateIcaoFplRouteString( waypointsToUse ) );
         }
 
         private void buttonPaste_Click(object sender, EventArgs e)

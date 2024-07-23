@@ -23,6 +23,20 @@ namespace GpxRouter.Utility
             return angle*180/Math.PI;
         }
 
+        public static (int AbsoluteRoundedDegrees, int AbsoluteRoundedMinutes) GetAbsoluteRoundedDegreesAndMinutes( double signedDecimalAngle )
+        {
+            int absoluteRoundedDegrees = Math.Abs( (int) Math.Truncate( signedDecimalAngle ) );
+            int absoluteRoundedMinutes = Math.Abs( (int) Math.Round( ( signedDecimalAngle - Math.Truncate( signedDecimalAngle ) ) * 60 ) );
+
+            if ( absoluteRoundedMinutes == 60 )
+            {
+                absoluteRoundedDegrees += 1;
+                absoluteRoundedMinutes = 0;
+            }
+
+            return ( absoluteRoundedDegrees, absoluteRoundedMinutes );
+        }
+
         #endregion
     }
 }

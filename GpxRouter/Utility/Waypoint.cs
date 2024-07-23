@@ -48,6 +48,79 @@ namespace GpxRouter.Utility
             return (float)((Global.ToDegrees(bearingRadians) + 360) % 360);
         }
 
+        public string ToIcaoFplRoutePointString()
+        {
+            // Latitude part
+
+            (int AbsoluteRoundedDegrees, int AbsoluteRoundedMinutes) latitudeAbsoluteRoundedDegreesAndMinutes =
+                Global.GetAbsoluteRoundedDegreesAndMinutes( LatitudeDegrees );
+
+            string latitudeSuffix;
+            if ( latitudeAbsoluteRoundedDegreesAndMinutes.Equals( ( 0, 0 ) ) )
+            {
+                latitudeSuffix = "N";
+            }
+            else
+            {
+                switch ( Math.Sign( LatitudeDegrees ) )
+                {
+                    case -1:
+                        latitudeSuffix = "S";
+                        break;
+
+                    case 0:
+                    case 1:
+                        latitudeSuffix = "N";
+                        break;
+
+                    default:
+                        throw new InvalidOperationException( nameof(LatitudeDegrees) );
+                }
+            }
+
+            string latitudeIcaoString = $"{latitudeAbsoluteRoundedDegreesAndMinutes.AbsoluteRoundedDegrees:D2}{latitudeAbsoluteRoundedDegreesAndMinutes.AbsoluteRoundedMinutes:D2}{latitudeSuffix}";
+
+            if ( latitudeIcaoString.Length != 5 ) throw new InvalidOperationException( nameof(latitudeIcaoString) );
+
+            // Longitude part
+
+            (int AbsoluteRoundedDegrees, int AbsoluteRoundedMinutes) longitudeAbsoluteRoundedDegreesAndMinutes =
+                Global.GetAbsoluteRoundedDegreesAndMinutes( LongitudeDegrees );
+
+            string longitudeSuffix;
+            if ( longitudeAbsoluteRoundedDegreesAndMinutes.Equals( ( 0, 0 ) ) )
+            {
+                longitudeSuffix = "E";
+            }
+            else
+            {
+                switch ( Math.Sign( LongitudeDegrees ) )
+                {
+                    case -1:
+                        longitudeSuffix = "W";
+                        break;
+
+                    case 0:
+                    case 1:
+                        longitudeSuffix = "E";
+                        break;
+
+                    default:
+                        throw new InvalidOperationException( nameof(LongitudeDegrees) );
+                }
+            }
+
+            string longitudeIcaoString = $"{longitudeAbsoluteRoundedDegreesAndMinutes.AbsoluteRoundedDegrees:D3}{longitudeAbsoluteRoundedDegreesAndMinutes.AbsoluteRoundedMinutes:D2}{longitudeSuffix}";
+
+            if ( longitudeIcaoString.Length != 6 ) throw new InvalidOperationException( nameof(longitudeIcaoString) );
+
+            // Output
+
+            var result = $"{latitudeIcaoString}{longitudeIcaoString}";
+
+            return result;
+        }
+
         #endregion
     }
 }
